@@ -12,9 +12,21 @@ I'm currently testing and refactoring code as well as creating a proper README. 
 
 ## Installation
 
-Install the required python(3) modules:
+Clone the project and install the required python(3) modules:
+
+I recommend creating a virtual environment:
 
 ```console
+git clone https://github.com/gpalo/cherrypy-report.git && cd cherrypy-report
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+Or install globally if you really want...
+
+```console
+git clone https://github.com/gpalo/cherrypy-report.git && cd cherrypy-report
 pip install -r requirements.txt
 ```
 
