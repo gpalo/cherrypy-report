@@ -1,0 +1,14 @@
+---
+title: "OSCP Exam Report"
+author: [{}]
+date: "{}"
+subtitle: |
+    | Student ID\: {} 
+    | {}
+lang: "en"
+titlepage: true
+titlepage-text-color: "ffffff"
+titlepage-rule-color: "ffffff"
+titlepage-background: "backgrounds/background2.pdf"
+classoption: oneside
+---

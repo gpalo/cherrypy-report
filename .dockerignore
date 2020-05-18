@@ -1,0 +1,10 @@
+Dockerfile
+.git
+.gitignore
+LICENSE
+*.pyc
+*.py
+README.md
+requirements.txt
+cherrytree-templates/
+docker_run.sh
