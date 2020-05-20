@@ -1,5 +1,5 @@
 # Cherrypy-report
-Create a PDF from your pentesting cherrytree notes (with the OSCP exam in mind).
+Create a PDF from your pentesting cherrytree notes (with the OSCP exam in mind). You can check out the reports that were generated from the included cherrytree templates in the 'examples' directory.
 
 ## Status
 I'm currently testing and refactoring code as well as creating a proper README. **I do not advise you to use the script for your exam just yet. I made this repository public for testing purposes.**
@@ -30,7 +30,7 @@ git clone https://github.com/gpalo/cherrypy-report.git && cd cherrypy-report
 pip install -r requirements.txt
 ```
 
-## Running the example
+## Running the examples
 You can run the examples with the following command:
 
 extensive template:
@@ -42,6 +42,7 @@ simple template (automatically fetching CVE details not working yet for this one
 ```console
 ./cherrypy_autoreport.py cherrytree-templates/simple-example-cherrytree.ctb
 ```
+The output can be found in the 'report' directory.
 
 ## Motivation for this project
 
