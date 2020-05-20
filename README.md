@@ -33,12 +33,12 @@ pip install -r requirements.txt
 ## Running the example
 You can run the examples with the following command:
 
-### extensive template
+extensive template:
 ```console
 ./cherrypy_autoreport.py cherrytree-templates/example-cherrytree.ctb
 ```
 
-### simple template (automatically fetching CVE details not working yet for this one)
+simple template (automatically fetching CVE details not working yet for this one):
 ```console
 ./cherrypy_autoreport.py cherrytree-templates/simple-example-cherrytree.ctb
 ```
