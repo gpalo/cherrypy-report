@@ -234,13 +234,9 @@ def rich_node_to_md(mdFile, node, label=None):
 
 #create an informational summary page for the exploit/privesc part of a machine
 def create_summary(mdFile, node):
-    
-    
     cve_id_node = get_child_node_by_name(node, 'CVE-ID')
-    #cve = {}                      
-    #only do this if a cve id is supplied
-    #TODO: validate CVE id
 
+    #only do this if a cve id is supplied
     if cve_id_node:
         cve_id = cve_id_node['txt']
         cve_obj = CVE.get_cve_obj(cve_id)
