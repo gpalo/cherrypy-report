@@ -153,7 +153,7 @@ def create_title_page(mdFile):
     mdFile.new_paragraph('\\newpage')
     mdFile.new_paragraph('\\tableofcontents')
     mdFile.new_paragraph('\\setcounter{tocdepth}{4}')
-    mdFile.new_paragraph('\\setcounter{secnumdepth}{2}')
+    mdFile.new_paragraph('\\setcounter{secnumdepth}{3}')
     mdFile.new_paragraph('\\newpage')
     return mdFile
 
@@ -259,7 +259,7 @@ def create_summary(mdFile, node):
     return mdFile
 
 
-def create_machine_summary(mdFile, overview_node): 
+def create_machine_titlepage(mdFile, overview_node): 
     #Summary
     ip = get_child_node_by_name(overview_node, 'Host IP')['txt']
     hostname = get_child_node_by_name(overview_node, 'Hostname')['txt']
@@ -269,9 +269,18 @@ def create_machine_summary(mdFile, overview_node):
     insert_page_break(mdFile)
     return mdFile
     
-    
+
+
 def create_md_for_node(mdFile, node, level=2,
                        skip_parent=False, header_name=None, no_header=False):
+   
+    #some 'special' nodes should be skipped
+    #TODO: do this better
+    skip_node_names = ['Proof', 'Appendix']
+
+    if node['name'] in skip_node_names:
+        return mdFile
+    
     if not header_name:
         header_name = node['name']
     #check if the initial node should be included
@@ -304,7 +313,8 @@ def create_proof_appendix(mdFile, host_nodes):
         proof_node = get_child_node_by_name(host, 'proof.txt')
         proof_contents = get_child_node_by_name(proof_node, 'contents')['txt']
 
-        ip = get_child_node_by_name(host, 'Host IP')['txt']
+        #ip = get_child_node_by_name(host, 'Host IP')['txt']
+        ip = host['name']
         local = local_contents if len(local_contents) else '-'
         proof = proof_contents if len(proof_contents) else '-'
         list_of_strings.extend([ip, local, proof])
@@ -316,48 +326,51 @@ def create_proof_appendix(mdFile, host_nodes):
 
 
 def add_hosts_to_report(mdFile, host_nodes):
-    for host in host_nodes:
+    #testing:
+    simple_mode = True
+
+    for host_node in host_nodes:
         
-        overview_node = get_child_node_by_name(host, 'Overview')
-        #overview_node = populate_childs_of_node(overview_node)
+        #simple_mode assumes no overview node and basically everything in one node
+        if simple_mode:
+            insert_page_break(mdFile) 
+            #mdFile.new_header(level=1, title=host_node['name']) 
+            mdFile = create_md_for_node(mdFile, host_node, level=1)
+        else:
+            overview_node = get_child_node_by_name(host_node, 'Overview')
+            enum_node = get_child_node_by_name(host_node, 'Service enumeration')
+            exploit_node = get_child_node_by_name(host_node, 'Exploitation')
+            privesc_node = get_child_node_by_name(host_node, 'Privilege escalation')
 
-        enum_node = get_child_node_by_name(host, 'Service enumeration')
-        #enum_node = populate_childs_of_node(enum_node)
+            insert_page_break(mdFile)
+            mdFile = create_machine_titlepage(mdFile, overview_node)
+            
+            mdFile = create_md_for_node(mdFile, enum_node)
 
-        exploit_node = get_child_node_by_name(host, 'Exploitation')
-        #exploit_node = populate_childs_of_node(exploit_node)
+            #exploitation header
+            insert_page_break(mdFile)
+            mdFile.new_header(level=2, title="Exploitation")
+            mdFile = create_summary(mdFile, exploit_node['children'][0]) 
 
-        privesc_node = get_child_node_by_name(host, 'Privilege escalation')
-        #privesc_node = populate_childs_of_node(privesc_node)
+            #Assumption: the first node is for the summary/initial page
+            #remove initial node from exploit
+            #because create_summary was used for that
+            exploit_node['children'].pop(0)
 
-        insert_page_break(mdFile)
-        mdFile = create_machine_summary(mdFile, overview_node)
+            #exploitation 
+            mdFile = create_md_for_node(mdFile, exploit_node, skip_parent=True)
 
-        #mdFile = create_service_enum(mdFile, enum_node)
-        mdFile = create_md_for_node(mdFile, enum_node)
+            #privesc header
+            insert_page_break(mdFile)
+            mdFile.new_header(level=2, title="Privilege escalation")
+            mdFile = create_summary(mdFile, privesc_node['children'][0])
 
-        #exploitation header
-        insert_page_break(mdFile)
-        mdFile.new_header(level=2, title="Exploitation")
-        mdFile = create_summary(mdFile, exploit_node['children'][0])     
+            #remove initial node from privesc because
+            #create_summary was used for that
+            privesc_node['children'].pop(0)
 
-        #remove initial node from exploit because create_exploit_initial was used for that
-        exploit_node['children'].pop(0)
-
-        #exploitation 
-        mdFile = create_md_for_node(mdFile, exploit_node, skip_parent=True)
-
-        #privesc header
-        #Assumption: the first node is for the summary/initial page
-        insert_page_break(mdFile)
-        mdFile.new_header(level=2, title="Privilege escalation")
-        mdFile = create_summary(mdFile, privesc_node['children'][0])
-
-        #remove initial node from exploit because create_exploit_initial was used for that
-        privesc_node['children'].pop(0)
-
-        #privesc 
-        mdFile = create_md_for_node(mdFile, privesc_node, skip_parent=True)
+            #privesc 
+            mdFile = create_md_for_node(mdFile, privesc_node, skip_parent=True)
     return mdFile
 
 
