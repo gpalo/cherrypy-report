@@ -315,8 +315,10 @@ def create_proof_appendix(mdFile, host_nodes):
 
         #ip = get_child_node_by_name(host, 'Host IP')['txt']
         ip = host['name']
-        local = local_contents if len(local_contents) else '-'
-        proof = proof_contents if len(proof_contents) else '-'
+        local = "\\footnotesize {}".format(
+                local_contents if len(local_contents) else '-')
+        proof = "\\footnotesize {}".format(
+                proof_contents if len(proof_contents) else '-')
         list_of_strings.extend([ip, local, proof])
 
     mdFile.new_table(columns=3, rows=len(host_nodes)+1,
@@ -327,14 +329,18 @@ def create_proof_appendix(mdFile, host_nodes):
 
 def add_hosts_to_report(mdFile, host_nodes):
     #testing:
-    simple_mode = True
+    
+    #no 'Overview' node means we 
 
     for host_node in host_nodes:
-        
+        simple_mode = False
+
+        #no overview node? Let's assume simple mode
+        if not get_child_node_by_name(host_node, 'Overview'):
+           simple_mode = True
         #simple_mode assumes no overview node and basically everything in one node
         if simple_mode:
             insert_page_break(mdFile) 
-            #mdFile.new_header(level=1, title=host_node['name']) 
             mdFile = create_md_for_node(mdFile, host_node, level=1)
         else:
             overview_node = get_child_node_by_name(host_node, 'Overview')
