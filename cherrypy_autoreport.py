@@ -300,7 +300,6 @@ def create_md_for_node(mdFile, node, level=2,
     return mdFile
 
 
-#TODO: better styling of table
 def create_proof_appendix(mdFile, host_nodes):
     mdFile.new_line()
     mdFile.write('\\section{{Overview local and proof contents}}')  
@@ -328,10 +327,6 @@ def create_proof_appendix(mdFile, host_nodes):
 
 
 def add_hosts_to_report(mdFile, host_nodes):
-    #testing:
-    
-    #no 'Overview' node means we 
-
     for host_node in host_nodes:
         simple_mode = False
 
@@ -343,6 +338,7 @@ def add_hosts_to_report(mdFile, host_nodes):
             insert_page_break(mdFile) 
             mdFile = create_md_for_node(mdFile, host_node, level=1)
         else:
+            #using the more extensive template
             overview_node = get_child_node_by_name(host_node, 'Overview')
             enum_node = get_child_node_by_name(host_node, 'Service enumeration')
             exploit_node = get_child_node_by_name(host_node, 'Exploitation')
@@ -350,7 +346,6 @@ def add_hosts_to_report(mdFile, host_nodes):
 
             insert_page_break(mdFile)
             mdFile = create_machine_titlepage(mdFile, overview_node)
-            
             mdFile = create_md_for_node(mdFile, enum_node)
 
             #exploitation header
